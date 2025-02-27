@@ -34,17 +34,7 @@ client = openai.OpenAI()
 tools = [{
     "type": "function",
     "function": {
-        "name": "get_weather",
-        "description": "Get current temperature for provided coordinates in celsius.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "latitude": {"type": "number"},
-                "longitude": {"type": "number"}
-            },
-            "required": ["latitude", "longitude"],
-            "additionalProperties": False
-        },
+        # ENTER FUNCTION DETAILS HERE!
         "strict": True
     }
 }]
@@ -54,11 +44,10 @@ tools = [{
 # --------------------------------------------------------------
 
 while True:
-    user_input = input("Enter the city you'd like to know's weather for today (or type 'exit' to quit): ").strip()
-    if user_input.lower() == "exit":
-        break
+    # GET USER INPUT HERE!
 
-    messages = [{"role": "user", "content": f"What's the weather like in {user_input} today?"}]
+    # replace BLANK with the city name you receive as input
+    messages = [{"role": "user", "content": f"What's the weather like in Los Angeles today?"}]
 
     # --------------------------------------------------------------
     # Let OpenAI model decide what function to call
@@ -68,7 +57,6 @@ while True:
         model="gpt-4o",
         messages=messages,
         tools=tools,
-        n=1,
     )
 
     print("\n\n===============================\n\n")
@@ -81,12 +69,13 @@ while True:
     # Execute the local function code based on OpenAI's prediction
     # --------------------------------------------------------------
 
-    # Since we created our input in such a way that we know we will get a tool_call in our response, we can access it in our response's message object.
+    # Since we created our input in such a way that we know we will get a tool_call in 
+    # our response, we can access it in our response's message object.
     tool_call = completion.choices[0].message.tool_calls[0]
     args = json.loads(tool_call.function.arguments)
 
     # At this point, args will be a dictionary with values corresponding to the parameters in the function we sent to OpenAI
-    result = get_weather(args["latitude"], args["longitude"])
+    # CALL THE FUNCTION USING THE ARGS FROM OPENAI!
 
     # --------------------------------------------------------------
     # Supply OpenAI model with results and print response for users in Natural Language
@@ -99,7 +88,7 @@ while True:
     messages.append({                               
         "role": "tool",
         "tool_call_id": tool_call.id,
-        "content": str(result)
+        "content": "REPLACE WITH FUNCTION RESULT"
     })
 
     # Finally, we make another request to OpenAI with the updated messages list.

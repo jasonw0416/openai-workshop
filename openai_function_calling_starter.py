@@ -31,10 +31,8 @@ def get_wind_speed(latitude, longitude):
 # ignore this last time since we only had one function. But now since we have multiple functions, we have to 
 # figure out what function OpenAI wants to call based on the tool call object's name.
 def call_function(name, args):
-    if name == "get_weather":
-        return get_weather(**args)
-    if name == "get_wind_speed":
-        return get_wind_speed(**args)
+    # FIGURE OUT WHICH FUNCTION TO CALL BASED ON NAME HERE!
+    pass
 
 # --------------------------------------------------------------
 # Load OpenAI API Token From the .env File
@@ -71,16 +69,7 @@ tools = [{
     "type": "function",
     "function": {
         "name": "get_wind_speed",
-        "description": "Get current wind speed for provided coordinates in km/h.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "latitude": {"type": "number"},
-                "longitude": {"type": "number"}
-            },
-            "required": ["latitude", "longitude"],
-            "additionalProperties": False
-        },
+        # ADD FUNCTION DETAILS HERE!
         "strict": True
     }
 }]
@@ -90,15 +79,12 @@ tools = [{
 # --------------------------------------------------------------
 
 while True:
-    city = input("Enter the city you'd like to learn more about for today (or type 'exit' to quit): ").strip()
-    if city.lower() == "exit":
-        break
+    # GET USER INPUT HERE!
+    # this time, get input in two stages:
+    # 1. Get the city name
+    # 2. Get the type of weather they want to know about (temperature, wind speed, or both?)
 
-    what_they_want = input("What would you like to know about the city? (temperature/wind speed/both): ").strip().lower()
-    if what_they_want == "both" or what_they_want not in ["temperature", "wind speed", "both"]:
-        what_they_want = "temperature and wind speed"
-
-    messages = [{"role": "user", "content": f"What's the {what_they_want} like in {city} today?"}]
+    messages = [{"role": "user", "content": f"What's the weather like in Los Angeles today?"}]
 
     # --------------------------------------------------------------
     # Let OpenAI model decide what function to call
@@ -142,11 +128,7 @@ while True:
         result = call_function(name, args)
 
         # Finally, we add a message with the result for that function call.
-        messages.append({
-            "role": "tool",
-            "tool_call_id": tool_call.id,
-            "content": str(result)
-        })
+        # ADD RESULT MESSAGE HERE!
 
     # print("\n\nMessages:", messages)
 
